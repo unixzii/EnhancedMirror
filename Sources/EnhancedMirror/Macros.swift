@@ -7,5 +7,5 @@
 
 /// A macro that implements `RuntimeInspectable` protocol for the attached type.
 @attached(member, names: named(allFieldNames), named(field(named:)))
-@attached(conformance)
+@attached(extension, conformances: RuntimeInspectable)
 public macro RuntimeInspectable() = #externalMacro(module: "EnhancedMirrorMacros", type: "RuntimeInspectableMacro")
