@@ -33,14 +33,13 @@ final class EnhancedMirrorMacroTests: XCTestCase {
                     }
                 }
                 let baz = true
-                
+
                 func myFunction() {
                 }
             }
             """,
             expandedSource:
             """
-            
             struct MyType {
                 var foo: Int
                 var bar: String {
@@ -55,12 +54,14 @@ final class EnhancedMirrorMacroTests: XCTestCase {
                     }
                 }
                 let baz = true
-                
+
                 func myFunction() {
                 }
+
                 var allFieldNames: AnyCollection<String> {
                     return AnyCollection(["foo", "bar", "bar2", "baz"])
                 }
+
                 mutating func field(named name: String) -> FieldAccessing? {
                     if name == "foo" {
                         return withUnsafeMutablePointer(to: &self) { pointer in
@@ -76,54 +77,57 @@ final class EnhancedMirrorMacroTests: XCTestCase {
                             )
                         }
                     }
-                if name == "bar" {
-                        return withUnsafeMutablePointer(to: &self) { pointer in
-                            return FieldAccessor(
-                                type: type(of: pointer.pointee.bar),
-                                name: "bar",
-                                reader: {
-                                    return pointer.pointee.bar
-                                },
-                                writer: {
-                        pointer.pointee.bar = $0
-                    }
-                            )
+                    if name == "bar" {
+                            return withUnsafeMutablePointer(to: &self) { pointer in
+                                return FieldAccessor(
+                                    type: type(of: pointer.pointee.bar),
+                                    name: "bar",
+                                    reader: {
+                                        return pointer.pointee.bar
+                                    },
+                                    writer: {
+                            pointer.pointee.bar = $0
                         }
-                    }
-                if name == "bar2" {
-                        return withUnsafeMutablePointer(to: &self) { pointer in
-                            return FieldAccessor(
-                                type: type(of: pointer.pointee.bar2),
-                                name: "bar2",
-                                reader: {
-                                    return pointer.pointee.bar2
-                                },
-                                writer: {
-                        pointer.pointee.bar2 = $0
-                    }
-                            )
+                                )
+                            }
                         }
-                    }
-                if name == "baz" {
-                        return withUnsafeMutablePointer(to: &self) { pointer in
-                            return FieldAccessor(
-                                type: type(of: pointer.pointee.baz),
-                                name: "baz",
-                                reader: {
-                                    return pointer.pointee.baz
-                                },
-                                writer: nil
-                            )
+                    if name == "bar2" {
+                            return withUnsafeMutablePointer(to: &self) { pointer in
+                                return FieldAccessor(
+                                    type: type(of: pointer.pointee.bar2),
+                                    name: "bar2",
+                                    reader: {
+                                        return pointer.pointee.bar2
+                                    },
+                                    writer: {
+                            pointer.pointee.bar2 = $0
                         }
-                    }
+                                )
+                            }
+                        }
+                    if name == "baz" {
+                            return withUnsafeMutablePointer(to: &self) { pointer in
+                                return FieldAccessor(
+                                    type: type(of: pointer.pointee.baz),
+                                    name: "baz",
+                                    reader: {
+                                        return pointer.pointee.baz
+                                    },
+                                    writer: nil
+                                )
+                            }
+                        }
                     return nil
                 }
+            }
+
+            extension MyType: RuntimeInspectable {
             }
             """,
             macros: testMacros
         )
     }
-    
+
     func testClass() {
         assertMacroExpansion(
             """
@@ -134,27 +138,31 @@ final class EnhancedMirrorMacroTests: XCTestCase {
             """,
             expandedSource:
             """
-            
             class MyClass {
                 var foo: Int
+
                 var allFieldNames: AnyCollection<String> {
                     return AnyCollection(["foo"])
                 }
-             func field(named name: String) -> FieldAccessing? {
-                if name == "foo" {
-                    return FieldAccessor(
-                        type: type(of: self.foo),
-                        name: "foo",
-                        reader: {
-                            return self.foo
-                        },
-                        writer: {
-                    self.foo = $0
+
+                func field(named name: String) -> FieldAccessing? {
+                        if name == "foo" {
+                                return FieldAccessor(
+                                        type: type(of: self.foo),
+                                        name: "foo",
+                                        reader: {
+                                                return self.foo
+                                        },
+                                        writer: {
+                                self.foo = $0
+                                }
+                                )
+                        }
+                        return nil
                 }
-                    )
-                }
-                return nil
-                }
+            }
+
+            extension MyClass: RuntimeInspectable {
             }
             """,
             macros: testMacros

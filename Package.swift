@@ -15,9 +15,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // TODO: Remove this when Xcode 15 released.
-        // Depend on the latest Swift 5.9 prerelease of SwiftSyntax
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0-swift-5.9-DEVELOPMENT-SNAPSHOT-2023-04-25-b"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
     ],
     targets: [
         // Macro implementation that performs the source transformation for mirror.
