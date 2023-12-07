@@ -78,7 +78,7 @@ public struct RuntimeInspectableMacro: MemberMacro, ExtensionMacro {
         let fieldNames = fieldMembers.map(\.fieldName)
         let allFieldNamesDecl: DeclSyntax =
             """
-            var allFieldNames: AnyCollection<String> {
+            public var allFieldNames: AnyCollection<String> {
                 return AnyCollection(\(literal: fieldNames))
             }
             """
@@ -156,7 +156,7 @@ public struct RuntimeInspectableMacro: MemberMacro, ExtensionMacro {
 
         let methodDecl: DeclSyntax =
             """
-            \(mutatingKeyword) func field(named name: String) -> FieldAccessing? {
+            public \(mutatingKeyword) func field(named name: String) -> FieldAccessing? {
                 \(CodeBlockItemListSyntax(branches.map {
                     .init(item: .stmt($0))
                 }))

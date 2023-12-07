@@ -58,11 +58,11 @@ final class EnhancedMirrorMacroTests: XCTestCase {
                 func myFunction() {
                 }
 
-                var allFieldNames: AnyCollection<String> {
+                public var allFieldNames: AnyCollection<String> {
                     return AnyCollection(["foo", "bar", "bar2", "baz"])
                 }
 
-                mutating func field(named name: String) -> FieldAccessing? {
+                public mutating func field(named name: String) -> FieldAccessing? {
                     if name == "foo" {
                         return withUnsafeMutablePointer(to: &self) { pointer in
                             return FieldAccessor(
@@ -141,24 +141,24 @@ final class EnhancedMirrorMacroTests: XCTestCase {
             class MyClass {
                 var foo: Int
 
-                var allFieldNames: AnyCollection<String> {
+                public var allFieldNames: AnyCollection<String> {
                     return AnyCollection(["foo"])
                 }
 
-                func field(named name: String) -> FieldAccessing? {
-                        if name == "foo" {
-                                return FieldAccessor(
-                                        type: type(of: self.foo),
-                                        name: "foo",
-                                        reader: {
-                                                return self.foo
-                                        },
-                                        writer: {
-                                self.foo = $0
-                                }
-                                )
-                        }
-                        return nil
+                public  func field(named name: String) -> FieldAccessing? {
+                    if name == "foo" {
+                        return FieldAccessor(
+                            type: type(of: self.foo),
+                            name: "foo",
+                            reader: {
+                                return self.foo
+                            },
+                            writer: {
+                        self.foo = $0
+                    }
+                        )
+                    }
+                    return nil
                 }
             }
 
